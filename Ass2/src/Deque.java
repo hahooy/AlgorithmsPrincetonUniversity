@@ -10,6 +10,7 @@ public class Deque<Item> implements Iterable<Item> {
 		first = null;
 		last = null;
 		N = 0;
+		
 	}
 
 	// double linked list inner class
