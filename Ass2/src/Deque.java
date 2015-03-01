@@ -69,8 +69,9 @@ public class Deque<Item> implements Iterable<Item> {
 
 	// remove and return the item from the front
 	public Item removeFirst() {
-		if (isEmpty())
+		if (isEmpty()) {
 			throw new NoSuchElementException("Stack underflow");
+		}
 		Item item = first.item;
 
 		if (first.next != null && first.next != last) {
@@ -90,8 +91,9 @@ public class Deque<Item> implements Iterable<Item> {
 
 	// remove and return the item from the end
 	public Item removeLast() {
-		if (isEmpty())
+		if (isEmpty()) {
 			throw new NoSuchElementException("Stack underflow");
+		}
 		Item item = last.item;
 
 		if (last.back != null && last.back != first) {

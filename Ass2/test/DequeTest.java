@@ -19,11 +19,6 @@ public class DequeTest {
 		myDeque = null;
 	}
 
-	@Ignore
-	public void testDeque() {
-		fail("Not yet implemented");
-	}
-
 	@Test
 	public void testIsEmpty() {
 		myDeque.addFirst(1);

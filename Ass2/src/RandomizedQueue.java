@@ -33,6 +33,9 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
 	// add the item
 	public void enqueue(Item item) {
+		if (item == null) {
+			throw new NullPointerException();
+		}
 		// increase array length if necessary
 		if (N == q.length) {
 			resize(2 * q.length);
@@ -42,6 +45,9 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
 	// remove and return a random item
 	public Item dequeue() {
+		if (isEmpty()) {
+			throw new NoSuchElementException("Stack underflow");
+		}
 		int removeIndex = StdRandom.uniform(N);
 		Item item = q[removeIndex];
 		q[removeIndex] = q[--N];
@@ -55,6 +61,9 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
 	// return (but do not remove) a random item
 	public Item sample() {
+		if (isEmpty()) {
+			throw new NoSuchElementException("Stack underflow");
+		}
 		int returnIndex = StdRandom.uniform(N);
 		return q[returnIndex];
 	}
@@ -72,8 +81,8 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 		@SuppressWarnings("unchecked")
 		public RandomizedQueueIterator() {
 			i = 0;
-			tempArray = (Item[]) new Object[q.length];
-			for (int i = 0; i < q.length; i++) {
+			tempArray = (Item[]) new Object[N];
+			for (int i = 0; i < N; i++) {
 				tempArray[i] = q[i];
 			}
 			StdRandom.shuffle(tempArray);
@@ -91,7 +100,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 			if (!hasNext()) {
 				throw new NoSuchElementException();
 			}
-			Item item = q[i++];
+			Item item = tempArray[i++];
 			return item;
 		}
 	}
@@ -99,13 +108,12 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 	// unit testing
 	public static void main(String[] args) {
 		RandomizedQueue<Integer> q = new RandomizedQueue<Integer>();
-		while (!StdIn.isEmpty()) {
-			String item = StdIn.readString();
-			if (!item.equals("-"))
-				q.enqueue(Integer.parseInt(item));
-			else if (!q.isEmpty())
-				StdOut.print(q.dequeue() + " ");
+		int[] myList = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+		for (int i : myList) {
+			q.enqueue(i);
 		}
-		StdOut.println("(" + q.size() + " left on queue)");
+		for (Integer k : q) {
+			StdOut.println(k);
+		}
 	}
 }
