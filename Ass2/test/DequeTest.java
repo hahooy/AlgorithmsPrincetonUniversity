@@ -2,6 +2,7 @@ import static org.junit.Assert.*;
 import java.util.*;
 
 import org.junit.*;
+import org.junit.Test;
 
 public class DequeTest {
 
