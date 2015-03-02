@@ -1,4 +1,6 @@
-import java.util.*;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 
 public class Deque<Item> implements Iterable<Item> {
 	private int N; // size of the deque
@@ -13,7 +15,7 @@ public class Deque<Item> implements Iterable<Item> {
 	}
 
 	// double linked list inner class
-	public class Node {
+	private class Node {
 		private Item item;
 		private Node back;
 		private Node next;

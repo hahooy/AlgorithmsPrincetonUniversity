@@ -6,7 +6,6 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 	private int N = 0;
 
 	// construct an empty randomized queue
-	@SuppressWarnings("unchecked")
 	public RandomizedQueue() {
 		q = (Item[]) new Object[2];
 	}
@@ -22,7 +21,6 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 	}
 
 	// resize array
-	@SuppressWarnings("unchecked")
 	private void resize(int capacity) {
 		Item[] tempArray = (Item[]) new Object[capacity];
 		for (int i = 0; i < N; i++) {
@@ -78,12 +76,11 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 		private int i;
 		private Item[] tempArray;
 
-		@SuppressWarnings("unchecked")
 		public RandomizedQueueIterator() {
 			i = 0;
 			tempArray = (Item[]) new Object[N];
-			for (int i = 0; i < N; i++) {
-				tempArray[i] = q[i];
+			for (int j = 0; j < N; j++) {
+				tempArray[j] = q[j];
 			}
 			StdRandom.shuffle(tempArray);
 		}
@@ -112,7 +109,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 		for (int i : myList) {
 			q.enqueue(i);
 		}
-		for (Integer k : q) {
+		for (int k : q) {
 			StdOut.println(k);
 		}
 	}
