@@ -35,11 +35,11 @@ public class Percolation {
 		}
 		// connect with the open site on the left
 		if (j - 1 > 0 && isOpen(i, j - 1)) {
-			unionFind.union((i - 1) * size + (j - 1), (i - 1)* size + j);
+			unionFind.union((i - 1) * size + (j - 1), (i - 1) * size + j);
 		}
 		// connect with the open site on the right
 		if (j + 1 <= size && isOpen(i, j + 1)) {
-			unionFind.union((i - 1) * size + (j + 1), (i - 1)* size + j);
+			unionFind.union((i - 1) * size + (j + 1), (i - 1) * size + j);
 		}
 		// indicate sites on the first row by union them with the first element
 		// of unionFind object
@@ -47,7 +47,7 @@ public class Percolation {
 			unionFind.union((i - 1) * size + j, 0);
 		}
 		// indicate sites on the last row by union them with the last element of
-		// unionFind object
+		// unionFind object when they are already full
 		if (i == size) {
 			unionFind.union((i - 1) * size + j, size * size + 1);
 		}
