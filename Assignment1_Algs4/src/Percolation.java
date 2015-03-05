@@ -9,6 +9,9 @@ public class Percolation {
 
 	// create N-by-N grid, with all sites blocked
 	public Percolation(int N) {
+		if (N <= 0 ) {
+			throw new IndexOutOfBoundsException("index out of bounds");
+		}
 		size = N;
 		unionFind = new WeightedQuickUnionUF(size * size + 2);
 		grid = new int[size][size];
@@ -22,7 +25,7 @@ public class Percolation {
 	// open site (row i, column j) if it is not open already
 	public void open(int i, int j) {
 		if (i <= 0 || i > size || j <= 0 || j > size) {
-			throw new IndexOutOfBoundsException("row index i out of bounds");
+			throw new IndexOutOfBoundsException("index out of bounds");
 		}
 		grid[i - 1][j - 1] = OPEN;
 		// connect with the open site above
@@ -56,7 +59,7 @@ public class Percolation {
 	// is site (row i, column j) open?
 	public boolean isOpen(int i, int j) {
 		if (i <= 0 || i > size || j <= 0 || j > size) {
-			throw new IndexOutOfBoundsException("row index i out of bounds");
+			throw new IndexOutOfBoundsException("index out of bounds");
 		}
 		return grid[i - 1][j - 1] == OPEN;
 	}
@@ -64,7 +67,7 @@ public class Percolation {
 	// is site (row i, column j) full?
 	public boolean isFull(int i, int j) {
 		if (i <= 0 || i > size || j <= 0 || j > size) {
-			throw new IndexOutOfBoundsException("row index i out of bounds");
+			throw new IndexOutOfBoundsException("index out of bounds");
 		}
 		return unionFind.connected(0, (i - 1) * size + j);
 	}
