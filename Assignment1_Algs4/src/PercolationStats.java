@@ -1,5 +1,5 @@
 public class PercolationStats {
-	private Percolation p;
+
 	private int trials;
 	private double[] threshold;
 	private double mean;
@@ -14,7 +14,7 @@ public class PercolationStats {
 
 		for (int i = 0; i < T; i++) {
 			int numOfOpen = 0;
-			p = new Percolation(N);
+			Percolation p = new Percolation(N);
 
 			while (!p.percolates()) {
 				int j = StdRandom.uniform(1, N + 1);

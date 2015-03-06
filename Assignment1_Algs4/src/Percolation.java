@@ -10,7 +10,7 @@ public class Percolation {
 	// create N-by-N grid, with all sites blocked
 	public Percolation(int N) {
 		if (N <= 0 ) {
-			throw new IndexOutOfBoundsException("index out of bounds");
+			throw new IllegalArgumentException("argument is smaller than 1");
 		}
 		size = N;
 		unionFind = new WeightedQuickUnionUF(size * size + 2);
@@ -79,7 +79,7 @@ public class Percolation {
 
 	// test client
 	public static void main(String[] args) {
-		Percolation p = new Percolation(20);
+		Percolation p = new Percolation(0);
 		for (int i = 1; i < 21; i++) {
 			p.open(i, 1);
 		}
