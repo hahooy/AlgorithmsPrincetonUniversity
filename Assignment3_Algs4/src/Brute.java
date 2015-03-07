@@ -36,10 +36,10 @@ public class Brute {
 			for (int j = i + 1; j < N; j++)
 				for (int k = j + 1; k < N; k++)
 					for (int l = k + 1; l < N; l++)
-						if (Math.abs(pList[i].slopeTo(pList[j])
-								- pList[k].slopeTo(pList[j])) < 0.001
-								&& Math.abs(pList[i].slopeTo(pList[j])
-										- pList[j].slopeTo(pList[l])) < 0.001) {
+						if (Double.compare(pList[i].slopeTo(pList[j]),
+								pList[k].slopeTo(pList[j])) == 0
+								&& Double.compare(pList[i].slopeTo(pList[j]),
+										pList[j].slopeTo(pList[l])) == 0) {
 
 							StdOut.println(pList[i] + " -> " + pList[j]
 									+ " -> " + pList[k] + " -> " + pList[l]);

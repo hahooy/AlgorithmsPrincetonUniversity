@@ -48,14 +48,14 @@ public class Fast {
 			String result = aux[i] + " -> ";
 			for (int k = i + 1; k < N - 1; k++) {
 
-				if (Math.abs(aux[i].slopeTo(aux[k])
-						- aux[i].slopeTo(aux[k + 1])) < 0.00001) {
+				if (Double.compare(aux[i].slopeTo(aux[k]),
+						aux[i].slopeTo(aux[k + 1])) == 0) {
 					result += aux[k] + " -> ";
 					countSameSlope++;
 				} else if (countSameSlope >= 3) {
 					result += aux[k];
 					StdOut.println(result);
-					aux[i].drawTo(pList[k]);
+					aux[i].drawTo(aux[k]);
 					result = aux[i] + " -> ";
 					countSameSlope = 1;
 				} else {
@@ -68,7 +68,7 @@ public class Fast {
 			if (countSameSlope >= 3) {
 				result += aux[N - 1];
 				StdOut.println(result);
-				aux[i].drawTo(pList[N - 1]);
+				aux[i].drawTo(aux[N - 1]);
 			}
 
 		}
