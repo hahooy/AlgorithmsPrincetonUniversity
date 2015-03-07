@@ -59,12 +59,12 @@ public class Point implements Comparable<Point> {
 			return Double.NEGATIVE_INFINITY;
 		}
 		if (deltaY == 0) {
-			return 0.0;
+			return +0.0;
 		}
 		if (deltaX == 0) {
 			return Double.POSITIVE_INFINITY;
 		}
-		return deltaY / deltaX;
+		return (double) deltaY / deltaX;
 	}
 
 	// is this point lexicographically smaller than that one?

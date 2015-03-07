@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 /*************************************************************************
  * Name: JJ Huang Email: iamhuangyz@gmail.com
  *
@@ -8,6 +6,7 @@ import java.util.Arrays;
  * Description: use brute force algorithm to check 4 points are collinear
  *
  *************************************************************************/
+import java.util.Arrays;
 
 public class Brute {
 	public static void main(String[] args) {
@@ -16,7 +15,7 @@ public class Brute {
 		StdDraw.setXscale(0, 32768);
 		StdDraw.setYscale(0, 32768);
 		StdDraw.show(0);
-		StdDraw.setPenRadius(0.01); // make the points a bit larger
+		StdDraw.setPenRadius(0.005); // make the points a bit larger
 
 		// read in the input
 		String filename = args[0];
@@ -37,21 +36,17 @@ public class Brute {
 			for (int j = i + 1; j < N; j++)
 				for (int k = j + 1; k < N; k++)
 					for (int l = k + 1; l < N; l++)
-						if (pList[i].slopeTo(pList[j]) == pList[i]
-								.slopeTo(pList[k])
-								&& pList[i].slopeTo(pList[j]) == pList[i]
-										.slopeTo(pList[l])) {
-							/*							 
-							 * line[0].drawTo(line[3]);
-							 */
+						if (Math.abs(pList[i].slopeTo(pList[j])
+								- pList[k].slopeTo(pList[j])) < 0.001
+								&& Math.abs(pList[i].slopeTo(pList[j])
+										- pList[j].slopeTo(pList[l])) < 0.001) {
+
 							StdOut.println(pList[i] + " -> " + pList[j]
 									+ " -> " + pList[k] + " -> " + pList[l]);
+							pList[i].drawTo(pList[l]);
 						}
 
 		// display to screen all at once
 		StdDraw.show(0);
-
-		// reset the pen radius
-		StdDraw.setPenRadius();
 	}
 }
