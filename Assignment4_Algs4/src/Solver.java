@@ -1,49 +1,36 @@
 import java.util.Comparator;
 
 public class Solver {
-	
-	//private MinPQ<SearchNode> minPQ;
-	private SearchNode lastNode;	
+
+	private int moves = 0;
+	private MinPQ<SearchNode> minPQ;
+	private SearchNode lastNode;
+	private final Comparator<SearchNode> PRIORITY_ORDER = new ByMht();
 
 	private class SearchNode {
 		private Board board;
-		private int moves;
+		private int priority;
 		private SearchNode previours;
 
 		public SearchNode(Board b, int m, SearchNode n) {
 			board = b;
-			moves = m;
+			priority = m + board.manhattan();
 			previours = n;
 		}
 	}
 
 	private class ByMht implements Comparator<SearchNode> {
-
-		public int compare(SearchNode s1, SearchNode s2) {
-			int priority1 = s1.board.manhattan() + s1.moves;
-			int priority2 = s2.board.manhattan() + s2.moves;
-
-			if (priority1 > priority2)
-				return 1;
-			else if (priority1 < priority2)
-				return -1;
-			else
-				return 0;
-
+		public int compare(SearchNode sn1, SearchNode sn2) {
+			return sn1.priority - sn2.priority;
 		}
 	}
 
 	// find a solution to the initial board (using the A* algorithm)
 	public Solver(Board initial) {
-		int moves = 0;
-		int movesTwin = 0;
-		Comparator<SearchNode> PriorityOrder = new ByMht();
-		Comparator<SearchNode> PriorityOrderTwin = new ByMht();
-		
 		SearchNode initialNode = new SearchNode(initial, moves, null);
-		SearchNode initialNodeTwin = new SearchNode(initial.twin(), movesTwin, null);
-		MinPQ<SearchNode> minPQ = new MinPQ<SearchNode>(PriorityOrder);
-		MinPQ<SearchNode> minPQTwin = new MinPQ<SearchNode>(PriorityOrderTwin);
+		SearchNode initialNodeTwin = new SearchNode(initial.twin(), moves, null);
+		MinPQ<SearchNode> minPQ = new MinPQ<SearchNode>(PRIORITY_ORDER);
+		MinPQ<SearchNode> minPQTwin = new MinPQ<SearchNode>(PRIORITY_ORDER);
 		minPQ.insert(initialNode);
 		minPQTwin.insert(initialNodeTwin);
 
@@ -53,21 +40,19 @@ public class Solver {
 		while (!pcesNode.board.isGoal() && !pcesNodeTwin.board.isGoal()) {
 
 			moves++;
+
 			Iterable<Board> nbBoard = pcesNode.board.neighbors();
 			for (Board i : nbBoard) {
-				if (i.equals(pcesNode))
-					continue;
+				if (i.equals(pcesNode)) continue;
 				SearchNode nbNode = new SearchNode(i, moves, pcesNode);
 				minPQ.insert(nbNode);
 			}
 			pcesNode = minPQ.delMin();
 
-			movesTwin++;
 			Iterable<Board> nbBoardTwin = pcesNodeTwin.board.neighbors();
 			for (Board i : nbBoardTwin) {
-				if (i.equals(pcesNodeTwin))
-					continue;
-				SearchNode nbNodeTwin = new SearchNode(i, movesTwin, pcesNodeTwin);
+				if (i.equals(pcesNodeTwin)) continue;
+				SearchNode nbNodeTwin = new SearchNode(i, moves, pcesNodeTwin);
 				minPQTwin.insert(nbNodeTwin);
 			}
 			pcesNodeTwin = minPQTwin.delMin();
@@ -86,7 +71,7 @@ public class Solver {
 	public int moves() {
 		if (!isSolvable())
 			return -1;
-		return lastNode.moves;
+		return moves;
 	}
 
 	// sequence of boards in a shortest solution; null if unsolvable
