@@ -34,47 +34,47 @@ public class Solver {
 
 	// find a solution to the initial board (using the A* algorithm)
 	public Solver(Board initial) {
-       /* main search node */
-        PriorityOrder po = new PriorityOrder();
-        MinPQ<SearchNode> pq = new MinPQ<SearchNode>(po);
-        SearchNode sn = new SearchNode(initial);
-        /* twin search node */
-        PriorityOrder twinPo = new PriorityOrder();
-        MinPQ<SearchNode> twinPq = new MinPQ<SearchNode>(twinPo);
-        SearchNode twinSn = new SearchNode(initial.twin());
-        pq.insert(sn);
-        twinPq.insert(twinSn);
-        
-        /* delete the minimum priority node from queue until goal is reached */
-        SearchNode minNode = pq.delMin();
-        SearchNode twinMinNode = twinPq.delMin();
-        while (!minNode.board.isGoal() && !twinMinNode.board.isGoal()) {
-            for (Board b : minNode.board.neighbors()) {
-                if ((minNode.preNode == null)
-                        || !b.equals(minNode.preNode.board)) {
-                    SearchNode node = new SearchNode(b);
-                    node.moves = minNode.moves + 1;
-                    node.preNode = minNode;
-                    pq.insert(node);
-                }
-            }
-            for (Board b : twinMinNode.board.neighbors()) {
-                if ((minNode.preNode == null)
-                        || !b.equals(twinMinNode.preNode.board)) {
-                    SearchNode node = new SearchNode(b);
-                    node.moves = twinMinNode.moves + 1;
-                    node.preNode = twinMinNode;
-                    twinPq.insert(node);
-                }
-            }
-            minNode = pq.delMin();
-            twinMinNode = twinPq.delMin();
-        }
-        
-        if (minNode.board.isGoal())
-            goal = minNode;
-        else
-            goal = null;
+		/* main search node */
+		PriorityOrder po = new PriorityOrder();
+		MinPQ<SearchNode> pq = new MinPQ<SearchNode>(po);
+		SearchNode sn = new SearchNode(initial);
+		/* twin search node */
+		PriorityOrder twinPo = new PriorityOrder();
+		MinPQ<SearchNode> twinPq = new MinPQ<SearchNode>(twinPo);
+		SearchNode twinSn = new SearchNode(initial.twin());
+		pq.insert(sn);
+		twinPq.insert(twinSn);
+
+		/* delete the minimum priority node from queue until goal is reached */
+		SearchNode minNode = pq.delMin();
+		SearchNode twinMinNode = twinPq.delMin();
+		while (!minNode.board.isGoal() && !twinMinNode.board.isGoal()) {
+			for (Board b : minNode.board.neighbors()) {
+				if ((minNode.preNode == null)
+						|| !b.equals(minNode.preNode.board)) {
+					SearchNode node = new SearchNode(b);
+					node.moves = minNode.moves + 1;
+					node.preNode = minNode;
+					pq.insert(node);
+				}
+			}
+			for (Board b : twinMinNode.board.neighbors()) {
+				if ((minNode.preNode == null)
+						|| !b.equals(twinMinNode.preNode.board)) {
+					SearchNode node = new SearchNode(b);
+					node.moves = twinMinNode.moves + 1;
+					node.preNode = twinMinNode;
+					twinPq.insert(node);
+				}
+			}
+			minNode = pq.delMin();
+			twinMinNode = twinPq.delMin();
+		}
+
+		if (minNode.board.isGoal())
+			goal = minNode;
+		else
+			goal = null;
 	}
 
 	// is the initial board solvable?
@@ -90,14 +90,15 @@ public class Solver {
 	}
 
 	// sequence of boards in a shortest solution; null if unsolvable
-    public Iterable<Board> solution() {
-        if (!isSolvable())  return null;
-        Stack<Board> bStack = new Stack<Board>();
-        for (SearchNode s = goal; s != null; s = s.preNode)
-            bStack.push(s.board);
-        
-        return bStack;
-    }
+	public Iterable<Board> solution() {
+		if (!isSolvable())
+			return null;
+		Stack<Board> bStack = new Stack<Board>();
+		for (SearchNode s = goal; s != null; s = s.preNode)
+			bStack.push(s.board);
+
+		return bStack;
+	}
 
 	// solve a slider puzzle (given below)
 	public static void main(String[] args) {
