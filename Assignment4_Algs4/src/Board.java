@@ -77,7 +77,7 @@ public class Board {
 		if (dimension <= 1)
 			return null;
 		Board twin = new Board(blocks);
-		if (twin.blocks[0] != 0 && twin.blocks[1] != 0) {
+		if (blocks[0] != 0 && blocks[1] != 0) {
 			exch(twin.blocks, 0, 1);
 		} else {
 			exch(twin.blocks, dimension, dimension + 1);
