@@ -1,9 +1,10 @@
 import java.util.Comparator;
 
 public class Solver {
-
+	// final board
 	private SearchNode goal;
 
+	// search node class
 	private class SearchNode {
 		private Board board;
 		private int moves;
@@ -16,6 +17,7 @@ public class Solver {
 		}
 	}
 
+	// priority comparator based on Manhattan function
 	private class PriorityOrder implements Comparator<SearchNode> {
 
 		public int compare(SearchNode s1, SearchNode s2) {
@@ -34,18 +36,19 @@ public class Solver {
 
 	// find a solution to the initial board (using the A* algorithm)
 	public Solver(Board initial) {
-		/* main search node */
+		// original search node
 		PriorityOrder po = new PriorityOrder();
 		MinPQ<SearchNode> pq = new MinPQ<SearchNode>(po);
 		SearchNode sn = new SearchNode(initial);
-		/* twin search node */
+		// twin search node
 		PriorityOrder twinPo = new PriorityOrder();
 		MinPQ<SearchNode> twinPq = new MinPQ<SearchNode>(twinPo);
 		SearchNode twinSn = new SearchNode(initial.twin());
 		pq.insert(sn);
 		twinPq.insert(twinSn);
 
-		/* delete the minimum priority node from queue until goal is reached */
+		// use A* algorithm on both boards until one of them becomes the goal
+		// board
 		SearchNode minNode = pq.delMin();
 		SearchNode twinMinNode = twinPq.delMin();
 		while (!minNode.board.isGoal() && !twinMinNode.board.isGoal()) {
