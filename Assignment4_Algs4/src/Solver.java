@@ -1,106 +1,95 @@
 import java.util.Comparator;
 
 public class Solver {
-	// final board
-	private SearchNode goal;
 
-	// search node class
+	private SearchNode lastNode;
+	private final Comparator<SearchNode> PRIORITY_ORDER = new ByMht();
+
 	private class SearchNode {
 		private Board board;
 		private int moves;
+		private int priority;
 		private SearchNode preNode;
 
-		public SearchNode(Board b) {
+		public SearchNode(Board b, int m, SearchNode n) {
 			board = b;
-			moves = 0;
-			preNode = null;
+			priority = m + board.manhattan();
+			preNode = n;
+			moves = m;
 		}
 	}
 
-	// priority comparator based on Manhattan function
-	private class PriorityOrder implements Comparator<SearchNode> {
-
-		public int compare(SearchNode s1, SearchNode s2) {
-			int priority1 = s1.board.manhattan() + s1.moves;
-			int priority2 = s2.board.manhattan() + s2.moves;
-
-			if (priority1 > priority2)
-				return 1;
-			else if (priority1 < priority2)
-				return -1;
-			else
-				return 0;
-
+	private class ByMht implements Comparator<SearchNode> {
+		public int compare(SearchNode sn1, SearchNode sn2) {
+			return sn1.priority - sn2.priority;
 		}
 	}
 
 	// find a solution to the initial board (using the A* algorithm)
 	public Solver(Board initial) {
-		// original search node
-		PriorityOrder po = new PriorityOrder();
-		MinPQ<SearchNode> pq = new MinPQ<SearchNode>(po);
-		SearchNode sn = new SearchNode(initial);
-		// twin search node
-		PriorityOrder twinPo = new PriorityOrder();
-		MinPQ<SearchNode> twinPq = new MinPQ<SearchNode>(twinPo);
-		SearchNode twinSn = new SearchNode(initial.twin());
-		pq.insert(sn);
-		twinPq.insert(twinSn);
+		SearchNode initialNode = new SearchNode(initial, 0, null);
+		SearchNode initialNodeTwin = new SearchNode(initial.twin(), 0, null);
+		MinPQ<SearchNode> minPQ = new MinPQ<SearchNode>(PRIORITY_ORDER);
+		MinPQ<SearchNode> minPQTwin = new MinPQ<SearchNode>(PRIORITY_ORDER);
+		minPQ.insert(initialNode);
+		minPQTwin.insert(initialNodeTwin);
 
-		// use A* algorithm on both boards until one of them becomes the goal
-		// board
-		SearchNode minNode = pq.delMin();
-		SearchNode twinMinNode = twinPq.delMin();
-		while (!minNode.board.isGoal() && !twinMinNode.board.isGoal()) {
-			for (Board b : minNode.board.neighbors()) {
-				if ((minNode.preNode == null)
-						|| !b.equals(minNode.preNode.board)) {
-					SearchNode node = new SearchNode(b);
-					node.moves = minNode.moves + 1;
-					node.preNode = minNode;
-					pq.insert(node);
-				}
+		SearchNode pcesNode = minPQ.delMin();
+		SearchNode pcesNodeTwin = minPQTwin.delMin();
+
+		while (!pcesNode.board.isGoal() && !pcesNodeTwin.board.isGoal()) {
+
+			Iterable<Board> nbBoard = pcesNode.board.neighbors();
+			for (Board i : nbBoard) {
+				assert pcesNode.preNode != null;
+				if (pcesNode.preNode != null
+						&& i.equals(pcesNode.preNode.board))
+					continue;
+				SearchNode nbNode = new SearchNode(i, pcesNode.moves + 1,
+						pcesNode);
+				minPQ.insert(nbNode);
 			}
-			for (Board b : twinMinNode.board.neighbors()) {
-				if ((minNode.preNode == null)
-						|| !b.equals(twinMinNode.preNode.board)) {
-					SearchNode node = new SearchNode(b);
-					node.moves = twinMinNode.moves + 1;
-					node.preNode = twinMinNode;
-					twinPq.insert(node);
-				}
+			pcesNode = minPQ.delMin();
+
+			Iterable<Board> nbBoardTwin = pcesNodeTwin.board.neighbors();
+			for (Board i : nbBoardTwin) {
+				if (pcesNodeTwin.preNode != null
+						&& i.equals(pcesNodeTwin.preNode.board))
+					continue;
+				SearchNode nbNodeTwin = new SearchNode(i,
+						pcesNodeTwin.moves + 1, pcesNodeTwin);
+				minPQTwin.insert(nbNodeTwin);
 			}
-			minNode = pq.delMin();
-			twinMinNode = twinPq.delMin();
+			pcesNodeTwin = minPQTwin.delMin();
+
 		}
-
-		if (minNode.board.isGoal())
-			goal = minNode;
-		else
-			goal = null;
+		if (pcesNode.board.isGoal())
+			lastNode = pcesNode;
 	}
 
 	// is the initial board solvable?
 	public boolean isSolvable() {
-		return goal != null;
+		return lastNode != null;
 	}
 
 	// min number of moves to solve initial board; -1 if unsolvable
 	public int moves() {
 		if (!isSolvable())
 			return -1;
-		return goal.moves;
+		return lastNode.moves;
 	}
 
 	// sequence of boards in a shortest solution; null if unsolvable
 	public Iterable<Board> solution() {
 		if (!isSolvable())
 			return null;
-		Stack<Board> bStack = new Stack<Board>();
-		for (SearchNode s = goal; s != null; s = s.preNode)
-			bStack.push(s.board);
-
-		return bStack;
+		Stack<Board> solution = new Stack<Board>();
+		SearchNode n = lastNode;
+		while (n != null) {
+			solution.push(n.board);
+			n = n.preNode;
+		}
+		return solution;
 	}
 
 	// solve a slider puzzle (given below)
