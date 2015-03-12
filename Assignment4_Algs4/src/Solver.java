@@ -2,9 +2,10 @@ import java.util.Comparator;
 
 public class Solver {
 
+	// final board
 	private SearchNode lastNode;
-	private final Comparator<SearchNode> PRIORITY_ORDER = new ByMht();
 
+	// search node class
 	private class SearchNode {
 		private Board board;
 		private int moves;
@@ -13,13 +14,14 @@ public class Solver {
 
 		public SearchNode(Board b, int m, SearchNode n) {
 			board = b;
-			priority = m + board.manhattan();
+			priority = m + board.manhattan(); // based on Manhattan function
 			preNode = n;
 			moves = m;
 		}
 	}
 
-	private class ByMht implements Comparator<SearchNode> {
+	// priority comparator
+	private class PriorityByMht implements Comparator<SearchNode> {
 		public int compare(SearchNode sn1, SearchNode sn2) {
 			return sn1.priority - sn2.priority;
 		}
@@ -27,21 +29,25 @@ public class Solver {
 
 	// find a solution to the initial board (using the A* algorithm)
 	public Solver(Board initial) {
+		// initiate a original search node and a twin search node
 		SearchNode initialNode = new SearchNode(initial, 0, null);
 		SearchNode initialNodeTwin = new SearchNode(initial.twin(), 0, null);
-		MinPQ<SearchNode> minPQ = new MinPQ<SearchNode>(PRIORITY_ORDER);
-		MinPQ<SearchNode> minPQTwin = new MinPQ<SearchNode>(PRIORITY_ORDER);
+		// priority queue
+		MinPQ<SearchNode> minPQ = new MinPQ<SearchNode>(new PriorityByMht());
+		MinPQ<SearchNode> minPQTwin = new MinPQ<SearchNode>(new PriorityByMht());
 		minPQ.insert(initialNode);
 		minPQTwin.insert(initialNodeTwin);
 
+		// dequeue the minimum priority search node from both priority queue
+		// until one of them becomes the goal board
 		SearchNode pcesNode = minPQ.delMin();
 		SearchNode pcesNodeTwin = minPQTwin.delMin();
-
 		while (!pcesNode.board.isGoal() && !pcesNodeTwin.board.isGoal()) {
 
 			Iterable<Board> nbBoard = pcesNode.board.neighbors();
 			for (Board i : nbBoard) {
 				assert pcesNode.preNode != null;
+
 				if (pcesNode.preNode != null
 						&& i.equals(pcesNode.preNode.board))
 					continue;
