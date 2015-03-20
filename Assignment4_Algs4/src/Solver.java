@@ -43,7 +43,7 @@ public class Solver {
 		SearchNode pcesNode = minPQ.delMin();
 		SearchNode pcesNodeTwin = minPQTwin.delMin();
 		while (!pcesNode.board.isGoal() && !pcesNodeTwin.board.isGoal()) {
-
+			System.out.println(pcesNodeTwin.moves);
 			Iterable<Board> nbBoard = pcesNode.board.neighbors();
 			for (Board i : nbBoard) {
 				assert pcesNode.preNode != null;
@@ -66,8 +66,7 @@ public class Solver {
 						pcesNodeTwin.moves + 1, pcesNodeTwin);
 				minPQTwin.insert(nbNodeTwin);
 			}
-			pcesNodeTwin = minPQTwin.delMin();
-
+			pcesNodeTwin = minPQTwin.delMin();			
 		}
 		if (pcesNode.board.isGoal())
 			lastNode = pcesNode;
