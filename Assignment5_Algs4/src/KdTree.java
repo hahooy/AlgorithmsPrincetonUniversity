@@ -1,6 +1,7 @@
 /*************************************************************************
- * Compilation: javac KdTree.java Execution: java KdTree Dependencies:
- * Point.java, RectHV.java, In.java, StdDraw.java
+ * Compilation: javac KdTree
+ * java Execution: java KdTree 
+ * Dependencies: Point.java, RectHV.java, In.java, StdDraw.java
  *
  * This class represents a set of points in the unit square implemented by a
  * 2dTree
@@ -45,15 +46,16 @@ public class KdTree {
 		if (p == null) {
 			throw new java.lang.NullPointerException();
 		}
+		// the axis-align rectangle for the first point is (0,0,1,1)
 		RectHV r = new RectHV(0, 0, 1, 1);
 		root = insert(root, p, 'v', r);
-		size++;
 	}
 
-	// insert key into kdtree and return the root, pass in orientation and
-	// rectangle as arguments
+	// insert key into kdtree rooted at node x and return the root, pass in
+	// orientation and rectangle as arguments
 	private Node insert(Node x, Point2D p, char o, RectHV r) {
 		if (x == null) {
+			size++;
 			return new Node(p, r);
 		}
 		if (x.p.equals(p)) {
@@ -99,12 +101,13 @@ public class KdTree {
 
 	// does the set contain point p?
 	public boolean contains(Point2D p) {
-		if (p == null)
+		if (p == null) {
 			throw new java.lang.NullPointerException();
+		}
 		return isFound(root, p, 'v');
 	}
 
-	// return true if the point is in the points set
+	// return true if the point is in the kdtree rooted at node x
 	private boolean isFound(Node x, Point2D p, char o) {
 		if (x == null) {
 			return false;
@@ -132,13 +135,13 @@ public class KdTree {
 		drawPt(root, 'v');
 	}
 
-	// draw lines of points
+	// draw points and splitting lines
 	private void drawPt(Node x, char o) {
 		if (x == null) {
 			return;
 		}
 		StdDraw.setPenColor();
-		// StdDraw.setPenRadius(0.01);
+		StdDraw.setPenRadius(0.01);
 		x.p.draw();
 		if (o == 'v') {
 			StdDraw.setPenColor(StdDraw.RED);
@@ -157,17 +160,22 @@ public class KdTree {
 
 	// all points that are inside the rectangle
 	public Iterable<Point2D> range(RectHV rect) {
-		if (rect == null)
+		if (rect == null) {
 			throw new java.lang.NullPointerException();
+		}
 		Queue<Point2D> q = new Queue<Point2D>();
 		getRange(root, rect, q);
 		return q;
 	}
 
+	// enqueue all points that are inside the rectangle to the queue for the
+	// kdtree rooted at node x
 	private void getRange(Node x, RectHV rect, Queue<Point2D> q) {
 		if (x == null) {
 			return;
 		}
+		// enable pruning of the subtree rooted at x if the query rectangle does
+		// not intersect with the axis-align rectangle of the point in x node
 		if (!rect.intersects(x.rect)) {
 			return;
 		}
@@ -186,26 +194,46 @@ public class KdTree {
 		if (isEmpty()) {
 			return null;
 		}
-		return nearest(root, p, root.p);
+		return nearest(root, p, root.p, 'v');
 	}
 
-	// return the nearest neighbor
-	private Point2D nearest(Node x, Point2D p, Point2D nearestPt) {
+	// return the nearest neighbor for the kdtree rooted at node x
+	private Point2D nearest(Node x, Point2D queryPt, Point2D nearestPt, char o) {
 		if (x == null) {
 			return nearestPt;
 		}
-		assert x != null;
-		if (x.rect.distanceTo(p) >= nearestPt.distanceTo(p)) {
+		double qpToNp = nearestPt.distanceTo(queryPt);
+		// enable pruning of the subtree rooted at x
+		if (x.rect.distanceTo(queryPt) >= qpToNp) {
 			return nearestPt;
 		}
-		if (p.distanceTo(x.p) < p.distanceTo(nearestPt)) {
+		if (queryPt.distanceTo(x.p) < qpToNp) {
 			nearestPt = x.p;
 		}
-		Point2D ln = nearest(x.lb, p, nearestPt);
-		Point2D rn = nearest(x.rt, p, nearestPt);
+		Point2D ln = nearestPt;
+		Point2D rn = nearestPt;
+		// choose the subtree that is on the same side of the splitting line as
+		// the query point as the first subtree to explore
+		if (o == 'v') {
+			if (queryPt.x() < x.p.x()) {
+				ln = nearest(x.lb, queryPt, nearestPt, 'h');
+				rn = nearest(x.rt, queryPt, nearestPt, 'h');
+			} else {
+				rn = nearest(x.rt, queryPt, nearestPt, 'h');
+				ln = nearest(x.lb, queryPt, nearestPt, 'h');
+			}
+		} else {
+			if (queryPt.y() < x.p.y()) {
+				ln = nearest(x.lb, queryPt, nearestPt, 'v');
+				rn = nearest(x.rt, queryPt, nearestPt, 'v');
+			} else {
+				rn = nearest(x.rt, queryPt, nearestPt, 'v');
+				ln = nearest(x.lb, queryPt, nearestPt, 'v');
+			}
+		}
 		assert ln != null;
 		assert rn != null;
-		if (p.distanceTo(ln) < p.distanceTo(rn)) {
+		if (queryPt.distanceTo(ln) < queryPt.distanceTo(rn)) {
 			return ln;
 		} else {
 			return rn;
@@ -213,13 +241,12 @@ public class KdTree {
 	}
 
 	// unit testing of the methods (optional)
-	public static void main(String[] args) { // rescale coordinates and turn on
-												// animation mode
-		StdDraw.setXscale(0, 1);
+	public static void main(String[] args) {
+		StdDraw.setXscale(0, 1);// rescale coordinates
 		StdDraw.setYscale(0, 1);
 
 		KdTree ptSet = new KdTree();
-		// RectHV rect = new RectHV(0.2, 0.2, 0.4, 0.4);
+		RectHV rect = new RectHV(0.2, 0.2, 0.4, 0.4);
 		Point2D pt1 = new Point2D(0.7, 0.2);
 		Point2D pt2 = new Point2D(0.5, 0.4);
 		Point2D pt3 = new Point2D(0.2, 0.3);
@@ -230,15 +257,18 @@ public class KdTree {
 		ptSet.insert(pt3);
 		ptSet.insert(pt4);
 		ptSet.insert(pt5);
-		StdDraw.setPenRadius(0.01); // make the points a bit larger
 		ptSet.draw();
-		/*
-		 * StdDraw.setPenColor(StdDraw.RED); // set the color to red
-		 * StdDraw.setPenRadius(); // make the line narrower //rect.draw();
-		 * Iterable<Point2D> ptIN = ptSet.range(rect);
-		 * StdDraw.setPenRadius(0.01); // make the points a bit larger for
-		 * (Point2D pt : ptIN) { pt.draw(); } StdDraw.setPenColor(StdDraw.BLUE);
-		 * // set the color to red ptSet.nearest(new Point2D(0.8, 0.8)).draw();
-		 */
+
+		StdDraw.setPenRadius(); // make the line narrower
+		rect.draw();
+		Iterable<Point2D> ptIN = ptSet.range(rect);
+
+		for (Point2D pt : ptIN) {
+			pt.draw();
+		}
+
+		StdDraw.setPenRadius(0.01);
+		StdDraw.setPenColor(StdDraw.BLUE);
+		ptSet.nearest(new Point2D(0.8, 0.8)).draw();
 	}
 }
