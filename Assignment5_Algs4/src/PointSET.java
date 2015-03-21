@@ -1,3 +1,11 @@
+/*************************************************************************
+ *  Compilation:  javac PointSET.java
+ *  Execution:    java PointSET
+ *  Dependencies: Point.java, RectHV.java, In.java, StdDraw.java
+ *
+ *  This class represents a set of points in the unit square
+ *************************************************************************/
+
 public class PointSET {
 	private SET<Point2D> points;
 
