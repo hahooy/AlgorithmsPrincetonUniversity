@@ -1,5 +1,8 @@
 
 public class WordNet {
+	private SET nounSet;
+	private Digraph nounGraph;
+	private SAP nounSap;
 
    // constructor takes the name of the two input files
    public WordNet(String synsets, String hypernyms) {
