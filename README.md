@@ -1,5 +1,5 @@
 AlgorithmsByPrincetonUniversity
 ============
 
-Programming assignments for Algorithms offered by Princeton University through Coursera 
+Programming assignments of Algorithms offered by Princeton University through Coursera 
 
