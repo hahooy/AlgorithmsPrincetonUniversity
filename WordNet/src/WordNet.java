@@ -1,13 +1,14 @@
 public class WordNet {
 	private LinearProbingHashST<Integer, String> synsetsST;
 	private LinearProbingHashST<String, SET<Integer>> nounsST;
-	private Digraph synsetsGraph;
+	private SAP sap;
 
 	// constructor takes the name of the two input files
 	public WordNet(String synsets, String hypernyms) {
 		synsetsST = buildSynsetsST(synsets);
-		synsetsGraph = buildSynsetsGraph(hypernyms, synsetsST.size());
+		Digraph synsetsGraph = buildSynsetsGraph(hypernyms, synsetsST.size());
 		nounsST = buildNounsST(synsets);
+		sap = new SAP(synsetsGraph);
 	}
 
 	private Digraph buildSynsetsGraph(String hypernyms, int size) {
@@ -68,20 +69,14 @@ public class WordNet {
 
 	// distance between nounA and nounB (defined below)
 	public int distance(String nounA, String nounB) {
-		SET<Integer> aSet = nounsST.get(nounA);
-		SET<Integer> bSet = nounsST.get(nounB);
-		SAP sap = new SAP(synsetsGraph);
-		return sap.length(aSet, bSet);
+		return sap.length(nounsST.get(nounA), nounsST.get(nounB));
 	}
 
 	// a synset (second field of synsets.txt) that is the common ancestor of
 	// nounA and nounB
 	// in a shortest ancestral path (defined below)
 	public String sap(String nounA, String nounB) {
-		SET<Integer> aSet = nounsST.get(nounA);
-		SET<Integer> bSet = nounsST.get(nounB);
-		SAP sap = new SAP(synsetsGraph);
-		int anc = sap.ancestor(aSet, bSet);
+		int anc = sap.ancestor(nounsST.get(nounA), nounsST.get(nounB));
 		return synsetsST.get(anc);
 	}
 
