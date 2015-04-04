@@ -1,45 +1,32 @@
 public class WordNet {
-	private LinearProbingHashST<Integer, String> synsetsST;
-	private LinearProbingHashST<String, SET<Integer>> nounsST;
+	private LinearProbingHashST<Integer, String> synsetsST = new LinearProbingHashST<Integer, String>();
+	private LinearProbingHashST<String, SET<Integer>> nounsST = new LinearProbingHashST<String, SET<Integer>>();
 	private SAP sap;
 
 	// constructor takes the name of the two input files
 	public WordNet(String synsets, String hypernyms) {
-		synsetsST = buildSynsetsST(synsets);
-		Digraph synsetsGraph = buildSynsetsGraph(hypernyms, synsetsST.size());
-		nounsST = buildNounsST(synsets);
-		sap = new SAP(synsetsGraph);
+		buildSynSTs(synsets, hypernyms);
+		buildSap(hypernyms, synsetsST.size());
+		System.out.println("!");
 	}
 
-	private Digraph buildSynsetsGraph(String hypernyms, int size) {
+	// construct a digraph and build a SAP
+	private void buildSap(String hypernyms, int size) {
 		Digraph graph = new Digraph(size);
 		In in = new In(hypernyms);
-		String hyperLine = null;
-		while ((hyperLine = in.readLine()) != null) {
-			String[] tokens = hyperLine.split("\\s*,\\s*");
+		String line = null;
+		while ((line = in.readLine()) != null) {
+			String[] tokens = line.split("\\s*,\\s*");
 			for (int i = 1; i < tokens.length; i++) {
 				graph.addEdge(Integer.parseInt(tokens[0]),
 						Integer.parseInt(tokens[i]));
 			}
 		}
-		return graph;
+		sap = new SAP(graph);
 	}
 
-	private LinearProbingHashST<Integer, String> buildSynsetsST(
-			String synsetsFileName) {
-		LinearProbingHashST<Integer, String> ST = new LinearProbingHashST<Integer, String>();
-		In in = new In(synsetsFileName);
-		String synsetLine = null;
-		while ((synsetLine = in.readLine()) != null) {
-			String[] tokens = synsetLine.split("\\s*,\\s*");
-			ST.put(Integer.parseInt(tokens[0]), tokens[1]);
-		}
-		return ST;
-	}
-
-	private LinearProbingHashST<String, SET<Integer>> buildNounsST(
-			String sysnetsFileName) {
-		LinearProbingHashST<String, SET<Integer>> ST = new LinearProbingHashST<String, SET<Integer>>();
+	// build synsets and nouns symbol tables
+	private void buildSynSTs(String sysnetsFileName, String hypernyms) {
 		In in = new In(sysnetsFileName);
 		String line = null;
 		while ((line = in.readLine()) != null) {
@@ -47,14 +34,14 @@ public class WordNet {
 			String[] nounsTokens = tokens[1].split("\\s+");
 			for (String i : nounsTokens) {
 				SET<Integer> syn = new SET<Integer>();
-				if (ST.contains(i)) {
-					syn = ST.get(i);
+				if (nounsST.contains(i)) {
+					syn = nounsST.get(i);
 				}
 				syn.add(Integer.parseInt(tokens[0]));
-				ST.put(i, syn);
+				nounsST.put(i, syn);
 			}
+			synsetsST.put(Integer.parseInt(tokens[0]), tokens[1]);
 		}
-		return ST;
 	}
 
 	// returns all WordNet nouns
@@ -82,13 +69,11 @@ public class WordNet {
 
 	// do unit testing of this class
 	public static void main(String[] args) {
-		In in = new In("/Users/hahooy1/Downloads/wordnet/hypernyms.txt");
-		String hyperLine = null;
-		while ((hyperLine = in.readLine()) != null) {
-			String[] tokens = hyperLine.split("\\s*,\\s*");
-			for (String i : tokens) {
-				StdOut.println(i);
-			}
-		}
+		WordNet wn = new WordNet(
+				"/Users/hahooy1/Downloads/wordnet/synsets.txt",
+				"/Users/hahooy1/Downloads/wordnet/hypernyms.txt");
+		System.out.println(wn.isNoun("ACE_inhibitor"));
+		System.out.println(wn.distance("worm", "bird"));
+		System.out.println(wn.sap("worm", "bird"));
 	}
 }

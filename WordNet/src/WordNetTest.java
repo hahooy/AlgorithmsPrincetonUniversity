@@ -6,15 +6,16 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 public class WordNetTest {
-	private WordNet wn;
+	private WordNet wn = new WordNet("/Users/hahooy1/Downloads/wordnet/synsets.txt",
+				"/Users/hahooy1/Downloads/wordnet/hypernyms.txt");
 
-	@Before
+	@Ignore
 	public void setUp() throws Exception {
 		wn = new WordNet("/Users/hahooy1/Downloads/wordnet/synsets.txt",
 				"/Users/hahooy1/Downloads/wordnet/hypernyms.txt");
 	}
 
-	@After
+	@Ignore
 	public void tearDown() throws Exception {
 		wn = null;
 	}
