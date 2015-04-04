@@ -44,6 +44,11 @@ public class SAPTest {
 		assertEquals(-1, length);
 	}
 
+	@Test(expected = IndexOutOfBoundsException.class)
+	public void testLengthIntInt4() {
+		int length = sap.length(1, 600);
+	}
+
 	@Test
 	public void testAncestorIntInt() {
 		int ancestor = sap.ancestor(3, 11);
@@ -77,7 +82,7 @@ public class SAPTest {
 		w.enqueue(11);
 		w.enqueue(6);
 		int length = sap.length(v, w);
-		assertEquals(3,length);
+		assertEquals(3, length);
 	}
 
 	@Ignore
