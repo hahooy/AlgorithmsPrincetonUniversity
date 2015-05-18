@@ -5,4 +5,4 @@ Programming assignments of Algorithms offered by Princeton University through Co
 
 PA1 Percolation
 ###
-    specification A [link](http://example.com).
+    specification [a link](https://github.com/user/repo/blob/branch/other_file.md)
