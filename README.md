@@ -5,4 +5,4 @@ Programming assignments of Algorithms offered by Princeton University through Co
 
 PA1 Percolation
 ###
-    specification http://www.cs.princeton.edu/courses/archive/fall12/cos226/assignments/percolation.html
+        [Checklist](http://coursera.cs.princeton.edu/algs4/checklists/boggle.html)
