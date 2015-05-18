@@ -44,7 +44,7 @@ public class WordNet {
 			}
 		}
 		if (!isDAG(graph)) {
-			throw new NullPointerException();
+			throw new IllegalArgumentException();
 		}
 		sap = new SAP(graph);
 	}

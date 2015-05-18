@@ -1,5 +1,5 @@
 public class Outcast {
-	WordNet wn;
+	private WordNet wn;
 
 	// constructor takes a WordNet object
 	public Outcast(WordNet wordnet) {
@@ -11,7 +11,7 @@ public class Outcast {
 		String oc = null;
 		int max = 0;
 		for (String i : nouns) {
-			int d = 0; 
+			int d = 0;
 			for (String j : nouns) {
 				d += wn.distance(i, j);
 			}
