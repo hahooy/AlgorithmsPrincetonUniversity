@@ -1,11 +1,15 @@
 public class SeamCarver {
 	private Picture picture;
-	private double[][] energyMatrix;
+
+	// private double[][] energyMatrix;
 
 	// create a seam carver object based on the given picture
 	public SeamCarver(Picture picture) {
+		if (picture == null) {
+			throw new NullPointerException();
+		}
 		this.picture = new Picture(picture);
-		energyMatrix = buildEnergyMatrix();
+		// energyMatrix = buildEnergyMatrix();
 	}
 
 	// current picture
@@ -66,21 +70,24 @@ public class SeamCarver {
 
 	// sequence of indices for horizontal seam
 	public int[] findHorizontalSeam() {
-		double[][] energyMatrix = new double[width()][height()];
-		for (int i = 0; i < width(); i++) {
-			for (int j = 0; j < height(); j++) {
-				energyMatrix[i][j] = energy(i, j);
-			}
-		}
-		return findVerticalSeamInMatrix(energyMatrix);
+		double[][] transposedEnergyMatrix = buildTransposeMatrix();
+		return findVerticalSeamInMatrix(transposedEnergyMatrix);
 	}
 
 	// sequence of indices for vertical seam
 	public int[] findVerticalSeam() {
-		if (height() != energyMatrix.length) {
-			energyMatrix = buildEnergyMatrix();
-		}
+		double[][] energyMatrix = buildEnergyMatrix();
 		return findVerticalSeamInMatrix(energyMatrix);
+	}
+
+	private double[][] buildTransposeMatrix() {
+		double[][] transposedEnergyMatrix = new double[width()][height()];
+		for (int i = 0; i < width(); i++) {
+			for (int j = 0; j < height(); j++) {
+				transposedEnergyMatrix[i][j] = energy(i, j);
+			}
+		}
+		return transposedEnergyMatrix;
 	}
 
 	private double[][] buildEnergyMatrix() {
@@ -151,12 +158,59 @@ public class SeamCarver {
 
 	// remove horizontal seam from current picture
 	public void removeHorizontalSeam(int[] seam) {
+		final int H = height(), W = width();
 
+		if (seam == null) {
+			throw new NullPointerException();
+		}
+		if (seam.length != W || H <= 1) {
+			throw new IllegalArgumentException();
+		}
+
+		Picture newPicture = new Picture(W, H - 1);
+		for (int i = 0; i < W; i++) {
+			for (int j = 0; j < H - 1; j++) {
+				if (j < seam[i]) {
+					newPicture.set(i, j, picture.get(i, j));
+				} else {
+					newPicture.set(i, j, picture.get(i, j + 1));
+				}
+			}
+		}
+		picture = newPicture;
 	}
 
 	// remove vertical seam from current picture
 	public void removeVerticalSeam(int[] seam) {
+		final int H = height(), W = width();
 
+		if (seam == null) {
+			throw new NullPointerException();
+		}
+		if (seam.length != H || W <= 1) {
+			throw new IllegalArgumentException();
+		}
+
+		Picture newPicture = new Picture(W - 1, H);
+		for (int i = 0; i < H; i++) {
+			for (int j = 0; j < W - 1; j++) {
+				if (j < seam[i]) {
+					newPicture.set(j, i, picture.get(j, i));
+				} else {
+					newPicture.set(j, i, picture.get(j + 1, i));
+				}
+			}
+		}
+		picture = newPicture;
+	}
+
+	private boolean isValidSeam(int[] seam) {
+		for (int i = 0; i < seam.length; i++) {
+			if (i + 1 < seam.length && Math.abs(seam[i] - seam[i + 1]) > 1) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }
