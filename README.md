@@ -3,6 +3,8 @@ Algorithms, Part I & Part II
 
 Programming assignments of Algorithms offered by Princeton University through Coursera 
 
-PA1 Percolation
-###
-    specification http://www.cs.princeton.edu/courses/archive/fall12/cos226/assignments/percolation.html
+###PA1 Percolation
+
+>[Specification](http://coursera.cs.princeton.edu/algs4/assignments/percolation.html)
+
+>[Checklist](http://coursera.cs.princeton.edu/algs4/checklists/percolation.html)
