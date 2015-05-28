@@ -72,17 +72,26 @@ public class BaseballElimination {
 		int gameVertices = ((int) Math.pow(N - 1, 2) - (N - 1)) / 2;
 		int teamVertices = N - 1;
 		FlowNetwork net = new FlowNetwork(numOfVertices);
-		int k = 1;
-		for (int i = 0; i < teamVertices - 1; i++) {
-			FlowEdge teamiToT = new FlowEdge(gameVertices + 1 + i,
-					numOfVertices - 1, wins(team) + remaining(team) - w[i]);
-			net.addEdge(teamiToT);
 
-			for (int j = i + 1; j < teamVertices; j++) {
+		
+		int k = 1; // index of vertices, start from 1 as s is 0				 
+		int l = gameVertices + 1; // index of team vertices
+		
+		
+		for (int i = 0; i < N; i++) {
+			if (i == teamMap.get(team)) {
+				continue;
+			}
+			for (int j = i + 1; j < N; j++) {
+				if (j == teamMap.get(team)) {
+					continue;
+				}
+				// connect s with game vertices
 				FlowEdge sToGame = new FlowEdge(0, k, g[i][j]);
-				FlowEdge gameToTeam1 = new FlowEdge(k, gameVertices + 1 + i,
+				// connect game vertices with team vertices
+				FlowEdge gameToTeam1 = new FlowEdge(k, l,
 						Double.POSITIVE_INFINITY);
-				FlowEdge gameToTeam2 = new FlowEdge(k, gameVertices + 1 + j,
+				FlowEdge gameToTeam2 = new FlowEdge(k, l,
 						Double.POSITIVE_INFINITY);
 
 				net.addEdge(sToGame);
@@ -95,9 +104,15 @@ public class BaseballElimination {
 									- w[j]);
 					net.addEdge(lastTeamToT);
 				}
-				
+
 				k++;
 			}
+			
+			// connect team vertices with t
+			FlowEdge teamiToT = new FlowEdge(l,
+					numOfVertices - 1, wins(team) + remaining(team) - w[i]);
+			net.addEdge(teamiToT);
+			l++;
 		}
 		System.out.println(net);
 		return false;
