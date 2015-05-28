@@ -83,7 +83,6 @@ public class BaseballElimination {
 			}
 		}
 		FlowNetwork net = buildFlowNetwork(team);
-		// System.out.println(net);
 
 		// compute the maxflow and mincut of the game flow network
 		FordFulkerson myFF = new FordFulkerson(net, 0, net.V() - 1);
@@ -141,9 +140,18 @@ public class BaseballElimination {
 		if (!isEliminated(team)) {
 			return null;
 		}
+		Queue<String> q = new Queue<String>();
+		for (String s : teams()) {
+			if (wins(team) + remaining(team) < wins(s)) {
+				q.enqueue(s);
+			}
+		}
+		if (!q.isEmpty()) {
+			return q;
+		}
 		FlowNetwork net = buildFlowNetwork(team);
 		FordFulkerson myFF = new FordFulkerson(net, 0, net.V() - 1);
-		Queue<String> q = new Queue<String>();
+		
 		int startIndex = ((int) Math.pow(N, 2) - N) / 2 + 1;
 
 		for (String s : teams()) {
@@ -161,11 +169,6 @@ public class BaseballElimination {
 
 	public static void main(String[] args) {
 		BaseballElimination be = new BaseballElimination("baseball/teams4.txt");
-		/*
-		 * for (String i : be.teams()) { System.out.printf("%s %d %d %d %d\n",
-		 * i, be.wins(i), be.losses(i), be.remaining(i), be.against(i,
-		 * "Detroit")); }
-		 */
 		boolean b = be.isEliminated("Philadelphia");
 		System.out.println(b);
 		for (String i : be.certificateOfElimination("Philadelphia")) {
