@@ -12,20 +12,19 @@ public class BaseballElimination {
 	// create a baseball division from given filename in format specified below
 	public BaseballElimination(String filename) {
 		In input = new In(filename);
-		N = Integer.parseInt(input.readLine());
+		N = input.readInt();
 		w = new int[N];
 		l = new int[N];
 		r = new int[N];
 		g = new int[N][N];
 
 		for (int i = 0; i < N; i++) {
-			String[] tokens = input.readLine().trim().split("\\s+");
-			teamMap.put(tokens[0], i);
-			w[i] = Integer.parseInt(tokens[1]);
-			l[i] = Integer.parseInt(tokens[2]);
-			r[i] = Integer.parseInt(tokens[3]);
+			teamMap.put(input.readString(), i);
+			w[i] = input.readInt();
+			l[i] = input.readInt();
+			r[i] = input.readInt();
 			for (int j = 0; j < N; j++) {
-				g[i][j] = Integer.parseInt(tokens[4 + j]);
+				g[i][j] = input.readInt();
 			}
 		}
 	}
@@ -77,14 +76,16 @@ public class BaseballElimination {
 		if (!teamMap.containsKey(team)) {
 			throw new IllegalArgumentException();
 		}
+		
+		// trivial elimination
 		for (String s : teams()) {
 			if (wins(team) + remaining(team) < wins(s)) {
 				return true;
 			}
 		}
-		FlowNetwork net = buildFlowNetwork(team);
-
-		// compute the maxflow and mincut of the game flow network
+		
+		// compute the maxflow of the game flow network
+		FlowNetwork net = buildFlowNetwork(team);		
 		FordFulkerson myFF = new FordFulkerson(net, 0, net.V() - 1);
 		for (FlowEdge edge : net.adj(0)) {
 			if (Double.compare(edge.flow(), edge.capacity()) < 0) {
@@ -93,7 +94,8 @@ public class BaseballElimination {
 		}
 		return false;
 	}
-
+	
+	// build game flow network
 	private FlowNetwork buildFlowNetwork(String team) {
 		int numOfVertices = 2 + N + ((int) Math.pow(N, 2) - N) / 2;
 		int gameVertices = ((int) Math.pow(N, 2) - N) / 2;
@@ -140,18 +142,23 @@ public class BaseballElimination {
 		if (!isEliminated(team)) {
 			return null;
 		}
-		Queue<String> q = new Queue<String>();
+		
+		Queue<String> R = new Queue<String>();
+		// trivial elimination
 		for (String s : teams()) {
 			if (wins(team) + remaining(team) < wins(s)) {
-				q.enqueue(s);
+				R.enqueue(s);
 			}
 		}
-		if (!q.isEmpty()) {
-			return q;
+		if (!R.isEmpty()) {
+			return R;
 		}
+		
+		// use FordFulkerson's mincut method to compute the non-trivial case
 		FlowNetwork net = buildFlowNetwork(team);
 		FordFulkerson myFF = new FordFulkerson(net, 0, net.V() - 1);
-		
+
+		// the first index of team vertices
 		int startIndex = ((int) Math.pow(N, 2) - N) / 2 + 1;
 
 		for (String s : teams()) {
@@ -160,18 +167,20 @@ public class BaseballElimination {
 				continue;
 			}
 			if (myFF.inCut(i + startIndex)) {
-				q.enqueue(s);
+				R.enqueue(s);
 			}
 
 		}
-		return q;
+		
+		return R;
 	}
-
+	
+	// unit testing
 	public static void main(String[] args) {
-		BaseballElimination be = new BaseballElimination("baseball/teams4.txt");
-		boolean b = be.isEliminated("Philadelphia");
+		BaseballElimination be = new BaseballElimination("baseball/teams54.txt");
+		boolean b = be.isEliminated("Team3");
 		System.out.println(b);
-		for (String i : be.certificateOfElimination("Philadelphia")) {
+		for (String i : be.certificateOfElimination("Team3")) {
 			System.out.println(i);
 		}
 	}
