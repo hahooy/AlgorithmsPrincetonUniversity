@@ -1,5 +1,5 @@
 public class BoggleSolver {
-	private TST<Boolean> dic;
+	private myTST<Boolean> dic;
 	private SET<String> validWords;
 
 	// Initializes the data structure using the given array of strings as the
@@ -7,7 +7,7 @@ public class BoggleSolver {
 	// (You can assume each word in the dictionary contains only the uppercase
 	// letters A through Z.)
 	public BoggleSolver(String[] dictionary) {
-		dic = new TST<Boolean>();
+		dic = new myTST<Boolean>();
 		for (String i : dictionary) {
 			dic.put(i, true);
 		}
@@ -32,22 +32,16 @@ public class BoggleSolver {
 	private class DFS {
 		private boolean[][] marked;
 		private BoggleBoard board;
-		private String s;
-		private StringBuilder sb;
-		private Stack<String> wordStack;
+		private String s = "";
 
 		public DFS(Bag<int[]>[][] graph, BoggleBoard board, int si, int sj) {
 			marked = new boolean[graph.length][graph[0].length];
-			wordStack = new Stack<String>();
-			sb = new StringBuilder();
 			this.board = board;
 			char letter = board.getLetter(si, sj);
 			if (letter != 'Q') {
-				sb.append(letter);
-				// this.s = String.valueOf(letter);
+				s += letter;
 			} else {
-				sb.append("QU");
-				//this.s = "QU";
+				s += "QU";
 			}
 			dfs(graph, si, sj);
 		}
@@ -66,7 +60,7 @@ public class BoggleSolver {
 				if (!marked[a[0]][a[1]]) {
 					char letter = board.getLetter(a[0], a[1]);
 					if (letter != 'Q') {
-						//s += letter;
+						s += letter;
 					} else {
 						s += "QU";
 					}
@@ -134,15 +128,6 @@ public class BoggleSolver {
 			}
 		}
 		return score;
-	}
-
-	// string representation of the dictionary
-	public String toString() {
-		StringBuilder s = new StringBuilder();
-		for (String i : dic.keys()) {
-			s.append(i).append("\n");
-		}
-		return s.toString();
 	}
 
 	public static void main(String[] args) {

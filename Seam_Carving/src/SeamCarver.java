@@ -148,7 +148,7 @@ public class SeamCarver {
 			}
 		}
 
-		// trace backward to get the lowest energy path
+		// backtracking to get the lowest energy path
 		for (int i = H - 2; i >= 0; i--) {
 			seam[i] = edgeTo[i + 1][seam[i + 1]];
 		}
