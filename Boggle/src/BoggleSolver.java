@@ -1,5 +1,5 @@
 public class BoggleSolver {
-	private myTST<Boolean> dic;
+	private MyTST<Boolean> dic;
 	private SET<String> validWords;
 
 	// Initializes the data structure using the given array of strings as the
@@ -7,7 +7,7 @@ public class BoggleSolver {
 	// (You can assume each word in the dictionary contains only the uppercase
 	// letters A through Z.)
 	public BoggleSolver(String[] dictionary) {
-		dic = new myTST<Boolean>();
+		dic = new MyTST<Boolean>();
 		for (String i : dictionary) {
 			dic.put(i, true);
 		}
