@@ -20,8 +20,10 @@ public class MoveToFront {
 			move(index, sequence);
 		}
 		BinaryStdOut.close();
+		BinaryStdIn.close();
 	}
 
+	// initialize an original sequence of character
 	private static char[] initSequence() {
 		int R = 256; // number of ASCII characters
 		char[] sequence = new char[R];
@@ -31,6 +33,7 @@ public class MoveToFront {
 		return sequence;
 	}
 
+	// move the letter to the front
 	private static void move(int index, char[] sequence) {
 		char c = sequence[index];
 		// move all entry before c one index further
@@ -52,6 +55,7 @@ public class MoveToFront {
 			move(index, sequence);
 		}
 		BinaryStdOut.close();
+		BinaryStdIn.close();
 	}
 
 	// if args[0] is '-', apply move-to-front encoding
