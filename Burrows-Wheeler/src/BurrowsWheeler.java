@@ -4,8 +4,8 @@ public class BurrowsWheeler {
 	// apply Burrows-Wheeler encoding, reading from standard input and writing
 	// to standard output
 	public static void encode() {
-		while (!BinaryStdIn.isEmpty()) {
-			String s = BinaryStdIn.readString();
+		while (!StdIn.isEmpty()) {
+			String s = StdIn.readString();
 			CircularSuffixArray csa = new CircularSuffixArray(s);
 			for (int i = 0; i < csa.length(); i++) {
 				if (csa.index(i) == 0) {
@@ -19,8 +19,7 @@ public class BurrowsWheeler {
 				BinaryStdOut.write(c);
 			}
 		}
-		BinaryStdOut.close();
-		BinaryStdIn.close();
+		BinaryStdOut.close();		
 	}
 
 	// apply Burrows-Wheeler decoding, reading from standard input and writing
@@ -34,14 +33,14 @@ public class BurrowsWheeler {
 				t[i] = s.charAt(i);
 			}
 			char[] firstColumn = getSortedT(t);
-			int[] next = getNextArray(t);
-			String original = "";
-			for (int i = 0; i <firstColumn.length; i++) {
-				original += firstColumn[first];
+			int[] next = getNextArray(t, firstColumn);
+
+			for (int i = 0; i < firstColumn.length; i++) {
+				char letter = firstColumn[first];
 				first = next[first];
-				
+				BinaryStdOut.write(letter);
 			}
-			BinaryStdOut.write(original);
+
 		}
 		BinaryStdOut.close();
 		BinaryStdIn.close();
@@ -56,14 +55,10 @@ public class BurrowsWheeler {
 		return firstColumn;
 	}
 
-	public static int[] getNextArray(char[] t) {
+	private static int[] getNextArray(char[] t, char[] firstColumn) {
 		int[] next = new int[t.length];
-		char[] firstColumn = new char[t.length];
 		boolean[] marked = new boolean[t.length];
-		for (int i = 0; i < t.length; i++) {
-			firstColumn[i] = t[i];
-		}
-		Arrays.sort(firstColumn);
+
 		for (int i = 0; i < t.length; i++) {
 			for (int j = 0; j < t.length; j++) {
 				if (t[i] == firstColumn[j] && !marked[j]) {
