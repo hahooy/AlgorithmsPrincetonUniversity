@@ -14,12 +14,15 @@ public class BurrowsWheeler {
 				}
 			}
 			for (int i = 0; i < csa.length(); i++) {
-				int last = (csa.index(i) + csa.length() - 1) % csa.length();
+				int last = csa.index(i) + csa.length() - 1;
+				if (last >= csa.length()) {
+					last -= csa.length();
+				}
 				char c = s.charAt(last);
 				BinaryStdOut.write(c);
 			}
 		}
-		BinaryStdOut.close();		
+		BinaryStdOut.close();
 	}
 
 	// apply Burrows-Wheeler decoding, reading from standard input and writing
@@ -45,7 +48,12 @@ public class BurrowsWheeler {
 		BinaryStdOut.close();
 		BinaryStdIn.close();
 	}
-
+	
+	private class IndexedChar {
+		private char c;
+		private int index;
+	}
+	
 	private static char[] getSortedT(char[] t) {
 		char[] firstColumn = new char[t.length];
 		for (int i = 0; i < t.length; i++) {
@@ -61,9 +69,9 @@ public class BurrowsWheeler {
 
 		for (int i = 0; i < t.length; i++) {
 			for (int j = 0; j < t.length; j++) {
-				if (t[i] == firstColumn[j] && !marked[j]) {
+				if (t[j] == firstColumn[i] && !marked[j]) {
 					marked[j] = true;
-					next[j] = i;
+					next[i] = j;
 					break;
 				}
 			}

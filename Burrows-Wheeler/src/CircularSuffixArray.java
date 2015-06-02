@@ -24,12 +24,17 @@ public class CircularSuffixArray {
 		}
 
 		private char charAt(int i) {
-			return s.charAt((index + i) % length);
+			int newIndex = index + i;
+			if (newIndex >= length) {
+				return s.charAt(newIndex - length);
+			} else {
+				return s.charAt(index + i);
+			}
 		}
 
 		public int compareTo(Suffix that) {
 			if (this == that)
-				return 0; // optimization			
+				return 0; // optimization
 			for (int i = 0; i < length; i++) {
 				if (this.charAt(i) < that.charAt(i))
 					return -1;
@@ -37,7 +42,7 @@ public class CircularSuffixArray {
 					return +1;
 			}
 			return 0;
-		}		
+		}
 	}
 
 	// length of s
@@ -54,7 +59,7 @@ public class CircularSuffixArray {
 	public static void main(String[] args) {
 		String s = "ABBABABABB";
 		CircularSuffixArray sa = new CircularSuffixArray(s);
-		
+
 		for (int i = 0; i < sa.length(); i++) {
 			System.out.println(sa.index(i));
 		}
