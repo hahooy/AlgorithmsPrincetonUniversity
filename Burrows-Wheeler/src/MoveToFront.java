@@ -19,8 +19,7 @@ public class MoveToFront {
 			BinaryStdOut.write(index, 8);
 			move(index, sequence);
 		}
-		BinaryStdOut.close();
-		BinaryStdIn.close();
+		BinaryStdOut.close();		
 	}
 
 	// initialize an original sequence of character
@@ -54,8 +53,7 @@ public class MoveToFront {
 			BinaryStdOut.write(sequence[index], 8);
 			move(index, sequence);
 		}
-		BinaryStdOut.close();
-		BinaryStdIn.close();
+		BinaryStdOut.close();		
 	}
 
 	// if args[0] is '-', apply move-to-front encoding

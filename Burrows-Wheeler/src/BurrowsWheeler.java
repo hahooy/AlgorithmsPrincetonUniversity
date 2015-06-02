@@ -4,15 +4,17 @@ public class BurrowsWheeler {
 	// apply Burrows-Wheeler encoding, reading from standard input and writing
 	// to standard output
 	public static void encode() {
-		while (!StdIn.isEmpty()) {
-			String s = StdIn.readString();
+		while (!BinaryStdIn.isEmpty()) {
+			String s = BinaryStdIn.readString();
 			CircularSuffixArray csa = new CircularSuffixArray(s);
+			// locate the index of the original string
 			for (int i = 0; i < csa.length(); i++) {
 				if (csa.index(i) == 0) {
 					BinaryStdOut.write(i);
 					break;
 				}
 			}
+			// write the last column in the sorted suffixes array
 			for (int i = 0; i < csa.length(); i++) {
 				int last = csa.index(i) + csa.length() - 1;
 				if (last >= csa.length()) {
@@ -31,50 +33,49 @@ public class BurrowsWheeler {
 		while (!BinaryStdIn.isEmpty()) {
 			int first = BinaryStdIn.readInt();
 			String s = BinaryStdIn.readString();
-			char[] t = new char[s.length()];
+			IndexedChar[] t = new IndexedChar[s.length()];
 			for (int i = 0; i < s.length(); i++) {
-				t[i] = s.charAt(i);
+				IndexedChar c = new IndexedChar(s.charAt(i), i);
+				t[i] = c;
 			}
-			char[] firstColumn = getSortedT(t);
-			int[] next = getNextArray(t, firstColumn);
+			Arrays.sort(t);
+			int[] next = getNextArray(t);
 
-			for (int i = 0; i < firstColumn.length; i++) {
-				char letter = firstColumn[first];
+			for (int i = 0; i < t.length; i++) {
+				char letter = t[first].c;
 				first = next[first];
 				BinaryStdOut.write(letter);
 			}
 
 		}
-		BinaryStdOut.close();
-		BinaryStdIn.close();
+		BinaryStdOut.close();		
 	}
-	
-	private class IndexedChar {
+
+	private static class IndexedChar implements Comparable<IndexedChar> {
 		private char c;
 		private int index;
-	}
-	
-	private static char[] getSortedT(char[] t) {
-		char[] firstColumn = new char[t.length];
-		for (int i = 0; i < t.length; i++) {
-			firstColumn[i] = t[i];
+
+		public IndexedChar(char c, int index) {
+			this.c = c;
+			this.index = index;
 		}
-		Arrays.sort(firstColumn);
-		return firstColumn;
+
+		public int compareTo(IndexedChar that) {
+			if (this.c < that.c) {
+				return -1;
+			}
+			if (this.c > that.c) {
+				return +1;
+			}
+			return 0;
+		}
 	}
 
-	private static int[] getNextArray(char[] t, char[] firstColumn) {
+	private static int[] getNextArray(IndexedChar[] t) {
 		int[] next = new int[t.length];
-		boolean[] marked = new boolean[t.length];
 
 		for (int i = 0; i < t.length; i++) {
-			for (int j = 0; j < t.length; j++) {
-				if (t[j] == firstColumn[i] && !marked[j]) {
-					marked[j] = true;
-					next[i] = j;
-					break;
-				}
-			}
+			next[i] = t[i].index;
 		}
 		return next;
 	}
