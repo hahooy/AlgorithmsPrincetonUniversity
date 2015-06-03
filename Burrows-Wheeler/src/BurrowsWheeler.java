@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 public class BurrowsWheeler {
 	// apply Burrows-Wheeler encoding, reading from standard input and writing
 	// to standard output

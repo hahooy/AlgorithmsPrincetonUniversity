@@ -23,14 +23,4 @@ public class BurrowsWheelerTest {
 	public void testDecode() {
 		fail("Not yet implemented");
 	}
-
-	@Test
-	public void testGetNextArray() {
-		char[] t = { 'A', 'R', 'D', '!', 'R', 'C', 'A', 'A', 'A', 'A', 'B', 'B' };
-		int first = 3;
-		int[] next = BurrowsWheeler.getNextArray(t);
-		for (int i : next) {
-			System.out.print(i + " ");
-		}
-	}
 }
