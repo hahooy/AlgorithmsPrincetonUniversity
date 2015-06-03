@@ -30,22 +30,31 @@ public class BurrowsWheeler {
 	// apply Burrows-Wheeler decoding, reading from standard input and writing
 	// to standard output
 	public static void decode() {
+		final int R = 256;
 		while (!BinaryStdIn.isEmpty()) {
 			int first = BinaryStdIn.readInt();
 			String s = BinaryStdIn.readString();
-			IndexedChar[] t = new IndexedChar[s.length()];
-			for (int i = 0; i < s.length(); i++) {
-				IndexedChar c = new IndexedChar(s.charAt(i), i);
-				t[i] = c;
-			}
-			// the index of sorted t[] i is the index of sorted suffixes, the
-			// value t[i].index is next[i], so next[] can be represented by
-			// t[].index
-			Arrays.sort(t);
+			int N = s.length();
 
-			for (int i = 0; i < t.length; i++) {
-				char letter = t[first].c;
-				first = t[first].index;
+			// sort the characters in s using key index counting
+			int count[] = new int[R + 1], next[] = new int[N];
+			char[] firstCol = new char[N];
+			for (int i = 0; i < N; i++) {
+				count[s.charAt(i) + 1]++;
+			}
+
+			for (int i = 0; i < R; i++) {
+				count[i + 1] += count[i];
+			}
+
+			for (int i = 0; i < N; i++) {
+				next[count[s.charAt(i)]] = i;
+				firstCol[count[s.charAt(i)]++] = s.charAt(i);
+			}
+
+			for (int i = 0; i < N; i++) {
+				char letter = firstCol[first];
+				first = next[first];
 				BinaryStdOut.write(letter);
 			}
 
