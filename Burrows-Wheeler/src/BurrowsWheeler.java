@@ -62,27 +62,6 @@ public class BurrowsWheeler {
 		BinaryStdOut.close();
 	}
 
-	// use an inner class to store t[] and characters
-	private static class IndexedChar implements Comparable<IndexedChar> {
-		private char c;
-		private int index;
-
-		public IndexedChar(char c, int index) {
-			this.c = c;
-			this.index = index;
-		}
-
-		public int compareTo(IndexedChar that) {
-			if (this.c < that.c) {
-				return -1;
-			}
-			if (this.c > that.c) {
-				return +1;
-			}
-			return 0;
-		}
-	}
-
 	// if args[0] is '-', apply Burrows-Wheeler encoding
 	// if args[0] is '+', apply Burrows-Wheeler decoding
 	public static void main(String[] args) {
