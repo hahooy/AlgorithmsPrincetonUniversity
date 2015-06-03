@@ -38,19 +38,22 @@ public class BurrowsWheeler {
 				IndexedChar c = new IndexedChar(s.charAt(i), i);
 				t[i] = c;
 			}
+			// the index of sorted t[] i is the index of sorted suffixes, the
+			// value t[i].index is next[i], so next[] can be represented by
+			// t[].index
 			Arrays.sort(t);
-			int[] next = getNextArray(t);
 
 			for (int i = 0; i < t.length; i++) {
 				char letter = t[first].c;
-				first = next[first];
+				first = t[first].index;
 				BinaryStdOut.write(letter);
 			}
 
 		}
-		BinaryStdOut.close();		
+		BinaryStdOut.close();
 	}
 
+	// use an inner class to store t[] and characters
 	private static class IndexedChar implements Comparable<IndexedChar> {
 		private char c;
 		private int index;
@@ -69,15 +72,6 @@ public class BurrowsWheeler {
 			}
 			return 0;
 		}
-	}
-
-	private static int[] getNextArray(IndexedChar[] t) {
-		int[] next = new int[t.length];
-
-		for (int i = 0; i < t.length; i++) {
-			next[i] = t[i].index;
-		}
-		return next;
 	}
 
 	// if args[0] is '-', apply Burrows-Wheeler encoding
