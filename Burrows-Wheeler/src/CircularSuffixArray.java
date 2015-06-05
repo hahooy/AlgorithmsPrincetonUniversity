@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 public class CircularSuffixArray {
 	private String s;
 	private int length;
