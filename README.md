@@ -8,6 +8,14 @@ Programming assignments of Algorithms offered by Princeton University through Co
 >[Specification](http://coursera.cs.princeton.edu/algs4/assignments/percolation.html)  
 >[Checklist](http://coursera.cs.princeton.edu/algs4/checklists/percolation.html)
 
+###Randomized Queues and Deques
+>[Specification](http://coursera.cs.princeton.edu/algs4/assignments/queues.html)
+>[Checklist](http://coursera.cs.princeton.edu/algs4/checklists/queues.html)
+
+###Pattern Recognition
+>[Specification](http://coursera.cs.princeton.edu/algs4/assignments/collinear.html)
+>[Checklist](http://coursera.cs.princeton.edu/algs4/checklists/collinear.html)
+
 ###WordNet
 
 >[Specification](http://coursera.cs.princeton.edu/algs4/assignments/wordnet.html)  
